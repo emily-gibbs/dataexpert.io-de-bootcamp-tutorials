@@ -10,6 +10,18 @@ fi
 # Start PostgreSQL
 pg_ctl -D "$PGDATA" -l "$PGDATA/pg.log" start
 
+# Wait for PostgreSQL to be ready
+RETRIES=5
+until pg_isready -q -d postgres; do
+  echo "Waiting for PostgreSQL to start..."
+  RETRIES=$((RETRIES - 1))
+  if [ "$RETRIES" -le 0 ]; then
+    echo "PostgreSQL failed to start after multiple attempts."
+    exit 1
+  fi
+  sleep 2
+done
+
 # Load environment variables from .env
 set -o allexport
 source bootcamp/materials/1-dimensional-data-modeling/.env
@@ -21,3 +33,6 @@ psql -U myuser -d postgres -c "DO \$\$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_rol
 # Run the init-db.sh script
 chmod +x bootcamp/materials/1-dimensional-data-modeling/scripts/init-db.sh
 bash bootcamp/materials/1-dimensional-data-modeling/scripts/init-db.sh
+
+# Start the Jupyter Notebook server
+exec jupyter notebook --ip=0.0.0.0 --no-browser --allow-root
