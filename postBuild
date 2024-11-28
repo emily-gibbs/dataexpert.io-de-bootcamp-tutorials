@@ -4,7 +4,7 @@ set -eux
 # Initialize PostgreSQL data directory if it doesn’t exist
 PGDATA=${PGDATA:-/home/jovyan/srv/pgsql}
 if [ ! -d "$PGDATA" ]; then
-  initdb -D "$PGDATA" --auth-host=md5 --encoding=UTF8
+  initdb -D "$PGDATA" --auth-host=md5 --encoding=UTF8 --username=myuser
 fi
 
 # Start PostgreSQL
@@ -15,9 +15,9 @@ set -o allexport
 source bootcamp/materials/1-dimensional-data-modeling/.env
 set +o allexport
 
-psql -U postgres -c "DO \$\$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'postgres') THEN CREATE ROLE postgres SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN; END IF; END \$\$;"
+# Ensure the "postgres" role exists
+psql -U myuser -d postgres -c "DO \$\$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'postgres') THEN CREATE ROLE postgres SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN; END IF; END \$\$;"
 
 # Run the init-db.sh script
-echo "Running init-db.sh script..."
 chmod +x bootcamp/materials/1-dimensional-data-modeling/scripts/init-db.sh
 bash bootcamp/materials/1-dimensional-data-modeling/scripts/init-db.sh
