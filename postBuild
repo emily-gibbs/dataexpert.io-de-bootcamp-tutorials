@@ -12,7 +12,7 @@ pg_ctl -D "$PGDATA" -l "$PGDATA/pg.log" start
 
 # Load environment variables from .env
 set -o allexport
-source bootcamp/materials/class1/.env
+source bootcamp/materials/1-dimensional-data-modeling/.env
 set +o allexport
 
 # Run the init-db.sh script
