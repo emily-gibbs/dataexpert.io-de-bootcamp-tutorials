@@ -1,0 +1,9 @@
+name: postgres-env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.8
+  - ipython-sql
+  - sqlalchemy
+  - psycopg2
+  - postgresql

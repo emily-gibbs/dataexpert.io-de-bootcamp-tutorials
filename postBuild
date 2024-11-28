@@ -1,24 +1,19 @@
 #!/bin/bash
-# Install PostgreSQL
-echo "Installing PostgreSQL..."
-apt-get update
-apt-get install -y postgresql postgresql-contrib
+set -eux
 
-# Start PostgreSQL service
-echo "Starting PostgreSQL..."
-service postgresql start
+# Initialize PostgreSQL data directory if it doesn’t exist
+PGDATA=${PGDATA:-/home/jovyan/srv/pgsql}
+if [ ! -d "$PGDATA" ]; then
+  initdb -D "$PGDATA" --auth-host=md5 --encoding=UTF8
+fi
+
+# Start PostgreSQL
+pg_ctl -D "$PGDATA" -l "$PGDATA/pg.log" start
 
 # Load environment variables from .env
-echo "Loading environment variables from .env..."
 set -o allexport
-source bootcamp/materials/1-dimensional-data-modeling/.env
+source bootcamp/materials/class1/.env
 set +o allexport
-
-# Set up PostgreSQL user and database using variables from .env
-echo "Setting up PostgreSQL user and database..."
-psql -U postgres -c "CREATE USER $POSTGRES_USER WITH PASSWORD '$POSTGRES_PASSWORD';"
-psql -U postgres -c "CREATE DATABASE $POSTGRES_SCHEMA OWNER $POSTGRES_USER;"
-psql -U postgres -c "ALTER USER $POSTGRES_USER WITH SUPERUSER;"
 
 # Run the init-db.sh script
 echo "Running init-db.sh script..."

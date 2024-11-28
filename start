@@ -1,0 +1,9 @@
+#!/bin/bash
+set -eux
+
+# Start PostgreSQL
+PGDATA=${PGDATA:-/home/jovyan/srv/pgsql}
+pg_ctl -D "$PGDATA" -l "$PGDATA/pg.log" start
+
+# Start the Jupyter Notebook server
+exec "$@"
