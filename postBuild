@@ -33,6 +33,3 @@ psql -U myuser -d postgres -c "DO \$\$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_rol
 # Run the init-db.sh script
 chmod +x bootcamp/materials/1-dimensional-data-modeling/scripts/init-db.sh
 bash bootcamp/materials/1-dimensional-data-modeling/scripts/init-db.sh
-
-# Start the Jupyter Notebook server
-exec jupyter notebook --ip=0.0.0.0 --no-browser --allow-root
