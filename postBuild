@@ -8,13 +8,19 @@ sudo apt-get install -y postgresql postgresql-contrib
 echo "Starting PostgreSQL..."
 sudo service postgresql start
 
-# Set up PostgreSQL user and database
-echo "Setting up PostgreSQL user and database..."
-sudo -u postgres psql -c "CREATE USER myuser WITH PASSWORD 'mypassword';"
-sudo -u postgres psql -c "CREATE DATABASE mydb OWNER myuser;"
-sudo -u postgres psql -c "ALTER USER myuser WITH SUPERUSER;"
+# Load environment variables from .env
+echo "Loading environment variables from .env..."
+set -o allexport
+source bootcamp/materials/class1/.env
+set +o allexport
 
-# Initialize the database using init-db.sh
+# Set up PostgreSQL user and database using variables from .env
+echo "Setting up PostgreSQL user and database..."
+sudo -u postgres psql -c "CREATE USER $POSTGRES_USER WITH PASSWORD '$POSTGRES_PASSWORD';"
+sudo -u postgres psql -c "CREATE DATABASE $POSTGRES_SCHEMA OWNER $POSTGRES_USER;"
+sudo -u postgres psql -c "ALTER USER $POSTGRES_USER WITH SUPERUSER;"
+
+# Run the init-db.sh script
 echo "Running init-db.sh script..."
-chmod +x materials/class1/scripts/init-db.sh
-materials/class1/scripts/init-db.sh
+chmod +x bootcamp/materials/1-dimensional-data-modeling/scripts/init-db.sh
+bash bootcamp/materials/1-dimensional-data-modeling/scripts/init-db.sh
