@@ -5,5 +5,17 @@ set -eux
 PGDATA=${PGDATA:-/home/jovyan/srv/pgsql}
 pg_ctl -D "$PGDATA" -l "$PGDATA/pg.log" start
 
+# Wait for PostgreSQL to be ready
+RETRIES=5
+until pg_isready -q -d postgres; do
+  echo "Waiting for PostgreSQL to start..."
+  RETRIES=$((RETRIES - 1))
+  if [ "$RETRIES" -le 0 ]; then
+    echo "PostgreSQL failed to start after multiple attempts."
+    exit 1
+  fi
+  sleep 2
+done
+
 # Start the Jupyter Notebook server
 exec "$@"
