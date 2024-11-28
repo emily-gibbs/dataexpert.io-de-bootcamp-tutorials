@@ -1,0 +1,20 @@
+#!/bin/bash
+# Install PostgreSQL
+echo "Installing PostgreSQL..."
+sudo apt-get update
+sudo apt-get install -y postgresql postgresql-contrib
+
+# Start PostgreSQL service
+echo "Starting PostgreSQL..."
+sudo service postgresql start
+
+# Set up PostgreSQL user and database
+echo "Setting up PostgreSQL user and database..."
+sudo -u postgres psql -c "CREATE USER myuser WITH PASSWORD 'mypassword';"
+sudo -u postgres psql -c "CREATE DATABASE mydb OWNER myuser;"
+sudo -u postgres psql -c "ALTER USER myuser WITH SUPERUSER;"
+
+# Initialize the database using init-db.sh
+echo "Running init-db.sh script..."
+chmod +x materials/class1/scripts/init-db.sh
+materials/class1/scripts/init-db.sh
