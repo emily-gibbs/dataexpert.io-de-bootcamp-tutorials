@@ -1,24 +1,24 @@
 #!/bin/bash
 # Install PostgreSQL
 echo "Installing PostgreSQL..."
-sudo apt-get update
-sudo apt-get install -y postgresql postgresql-contrib
+apt-get update
+apt-get install -y postgresql postgresql-contrib
 
 # Start PostgreSQL service
 echo "Starting PostgreSQL..."
-sudo service postgresql start
+service postgresql start
 
 # Load environment variables from .env
 echo "Loading environment variables from .env..."
 set -o allexport
-source bootcamp/materials/class1/.env
+source bootcamp/materials/1-dimensional-data-modeling/.env
 set +o allexport
 
 # Set up PostgreSQL user and database using variables from .env
 echo "Setting up PostgreSQL user and database..."
-sudo -u postgres psql -c "CREATE USER $POSTGRES_USER WITH PASSWORD '$POSTGRES_PASSWORD';"
-sudo -u postgres psql -c "CREATE DATABASE $POSTGRES_SCHEMA OWNER $POSTGRES_USER;"
-sudo -u postgres psql -c "ALTER USER $POSTGRES_USER WITH SUPERUSER;"
+psql -U postgres -c "CREATE USER $POSTGRES_USER WITH PASSWORD '$POSTGRES_PASSWORD';"
+psql -U postgres -c "CREATE DATABASE $POSTGRES_SCHEMA OWNER $POSTGRES_USER;"
+psql -U postgres -c "ALTER USER $POSTGRES_USER WITH SUPERUSER;"
 
 # Run the init-db.sh script
 echo "Running init-db.sh script..."
